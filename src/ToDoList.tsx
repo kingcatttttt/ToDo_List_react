@@ -1,5 +1,6 @@
 import React from "react";
 import {fdatasync} from "fs";
+import {filterValueType} from "./App";
 
 // function sum(a: number , b: number) {
 //     return alert(a + b)
@@ -12,7 +13,8 @@ export type TaskType = {
 type PropsType = {
     title: string
     tasks: Array<TaskType>
-    remoTask: Function
+    remoTask: (id:number) => void
+    changeFilter: (value: filterValueType) => void
 }
 export function ToDoList(props: PropsType) {
     return (
@@ -37,9 +39,9 @@ export function ToDoList(props: PropsType) {
 
             </ul>
             <div>
-                <button>All</button>
-                <button>Active</button>
-                <button>Completed</button>
+                <button onClick={ () => {props.changeFilter("all")}}>All</button>
+                <button onClick={ () => {props.changeFilter("active")}}>Active</button>
+                <button onClick={ () => {props.changeFilter("completed")}}>Completed</button>
             </div>
         </div>
     )
