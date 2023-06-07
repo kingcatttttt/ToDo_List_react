@@ -24,6 +24,17 @@ function App() {
         {id: v1(), title: "Latex", isDone: false},
     ])
 
+    function changeStatus(taskId:string,isdome:boolean) {
+        let task  = tasks.find( (t) => {
+            let task = tasks.find(t => t.id === taskId)
+            if (task) {
+                task.isDone = isdome
+            }
+            let copy = [ ...tasks]
+            Settasks(copy)
+        })
+    }
+
     let [filter, setFilter] = useState<filterValueType>("all")
 
     let tasksForToDoList = tasks;
@@ -48,7 +59,15 @@ function App() {
 
     return (
         <div className="App">
-            <ToDoList title="sex" tasks={tasksForToDoList} remoTask={removeTask} changeFilter={changeFilter} addTask={addTask}/>
+            <ToDoList title="sex"
+                      tasks={tasksForToDoList}
+                      remoTask={removeTask}
+                      changeFilter={changeFilter}
+                      addTask={addTask}
+                      changeTaskStatus={changeStatus}
+                      filter={filter}
+            />
+
         </div>
 
 

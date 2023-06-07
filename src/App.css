@@ -6,3 +6,15 @@
 .App > div {
   margin-right: 60px;
 }
+.ereor {
+  border:red 1px solid ;
+}
+.ereor-message {
+  color: red;
+}
+.active-filter {
+  background: aquamarine;
+}
+.is-done {
+  opacity: 0.5 ;
+}
