@@ -5,6 +5,7 @@ import {constants} from "os";
 import errno = module
 import {Simulate} from "react-dom/test-utils";
 import error = Simulate.error;
+
 import {isStringObject} from "util/types";
 
 // function sum(a: number , b: number) {
@@ -16,13 +17,15 @@ export type TaskType = {
     isDone: boolean
 }
 type PropsType = {
+    id: string
     title: string
-    tasks: Array<TaskType>
-    remoTask: (id:string) => void
-    changeFilter: (value: filterValueType) => void
-    addTask:(title:string) => void
-    changeTaskStatus: (taskId: string, isDone: boolean) => void
+    tasksObj: Array<TaskType>
+    remoTask: (id:string, todolistId: string) => void
+    changeFilter: (value: filterValueType,ToDoListId: string) => void
+    addTask:(title:string, todolistId: string) => void
+    changeTaskStatus: (taskId: string, isDone: boolean, todolistId: string) => void
     filter: filterValueType
+    removeTodoList:( todolistId: string) => void
 }
 
 
@@ -33,10 +36,12 @@ export function ToDoList(props: PropsType) {
     }
 
     const onKeyPressHandler = (e:KeyboardEvent<HTMLInputElement>) => {
-        SetError(null)
-        if(e.charCode == 13) {
-            props.addTask(newTaskTitle)
-            setNewTaskTitle("")
+        SetError(null, )
+        if(e.charCode == 13 && newTaskTitle.trim() !== "") {
+            props.addTask(newTaskTitle.trim(), props.id)
+            setNewTaskTitle("");
+        } else {
+            SetError("Title is Required")
         }
     }
     let [error, SetError] = useState<string | null>(null)
@@ -44,20 +49,21 @@ export function ToDoList(props: PropsType) {
        if(newTaskTitle.trim() === "") {
            SetError("Title is Required")
        } else {
-           props.addTask(newTaskTitle)
+           props.addTask(newTaskTitle.trim(), props.id)
            setNewTaskTitle("");
        }
 
     }
 
-    const onAllHandler = () => {props.changeFilter("all")}
-    const onActiveHandler = () => {props.changeFilter("active")}
-    const onComoletedHandler = (e: ChangeEvent<HTMLInputElement>) => {props.changeFilter("completed")}
-
-
+    const onAllHandler = () => {props.changeFilter("all", props.id)}
+    const onActiveHandler = () => {props.changeFilter("active", props.id)}
+    const onComoletedHandler = (e: ChangeEvent<HTMLInputElement>) => {props.changeFilter("completed", props.id)}
+    const removeTodoList = () => {
+        props.removeTodoList(props.id)
+    }
     return (
         <div>
-            <h3>{props.title}</h3>
+            <h3>{props.title} <button onClick={removeTodoList}>x</button></h3>
             <div>
 
                 <input value={newTaskTitle}
@@ -71,10 +77,10 @@ export function ToDoList(props: PropsType) {
             </div>
             <ul>
                 {
-                    props.tasks.map( (t) => {
-                        const onClickeHamdler = () => props.remoTask(t.id)
+                    props.tasksObj.map( (t) => {
+                        const onClickeHamdler = () => props.remoTask(t.id, props.id)
                         const onChamgeHamdler = (e:ChangeEvent<HTMLInputElement>) => {
-                            props.changeTaskStatus(t.id, e.currentTarget.checked)
+                            props.changeTaskStatus(t.id, e.currentTarget.checked, props.id)
                         }
 
                         return <li key={t.id} className={t.isDone ? "is-done" : ""} >
